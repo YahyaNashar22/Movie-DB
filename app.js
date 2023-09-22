@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
-app.use((req, res, next) => {
-  res.status(200).json({
-    message: "OK",
-  });
-});
+const testRoutes = require("./test-route");
+const timeRoutes = require("./time-route");
+app.use("/test", testRoutes);
+app.use("/time", timeRoutes);
+
 module.exports = app;
