@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const movies = require("./movies-object");
+//start of read routing
 router.get("/read", (req, res, next) => {
   res.status(200).json({
     status: "200",
@@ -75,11 +76,54 @@ router.get("/read/by-title", (req, res, next) => {
     data: sortedByTitle,
   });
 });
+//end of read routing --- start of create routing
 router.post("/create", (req, res, next) => {
   res.status(200).json({
     message: "Add movies",
   });
 });
+router.post("/create/add", (req, res, next) => {
+  const { title, year, rating } = req.query;
+  if (!title || !year) {
+    res.status(403).json({
+      status: "403",
+      error: "true",
+      message: `You cannot create a movie without providing a title and a year`,
+    });
+  }
+  if (year.length != 4) {
+    res.status(403).json({
+      status: "403",
+      error: "true",
+      message: "You cannot create a movie without providing a title and a year",
+    });
+  } else {
+    if (!rating) {
+      addedMovie = {
+        title,
+        year: parseInt(year),
+        rating: 4,
+      };
+      movies.push(addedMovie);
+      res.status(200).json({
+        message: `added ${title}`,
+        data: movies,
+      });
+    } else {
+      addedMovie = {
+        title,
+        year: parseInt(year),
+        rating: parseFloat(rating),
+      };
+      movies.push(addedMovie);
+      res.status(200).json({
+        message: `added ${title}`,
+        data: movies,
+      });
+    }
+  }
+});
+//end of create routing ---
 router.patch("/update", (req, res, next) => {
   res.status(200).json({
     message: "Edit movies",
