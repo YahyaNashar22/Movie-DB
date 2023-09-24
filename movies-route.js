@@ -8,6 +8,23 @@ router.get("/read", (req, res, next) => {
     data: movies,
   });
 });
+router.get("/read/id/:ID", (req, res, next) => {
+  const id = req.params.ID;
+  if (id < movies.length) {
+    res.status(200).json({
+      status: "200",
+      message: "This the requested movie",
+      data: movies[id - 1],
+    });
+  } else {
+    res.status(404).json({
+      status: "404",
+      error: "true",
+      message: "The movie <ID> does not exist",
+      data: movies[id - 1],
+    });
+  }
+});
 router.get("/read/by-date", (req, res, next) => {
   let sortedByDate = movies.sort(function (a, b) {
     if (a.year < b.year) {
