@@ -129,6 +129,76 @@ router.patch("/update", (req, res, next) => {
     message: "Edit movies",
   });
 });
+router.patch("/update/:ID", (req, res, next) => {
+  const id = req.params.ID;
+  const { title } = req.query;
+  movies[id - 1].title = title;
+  res.status(200).json({
+    message: `Edited movie ${id} title to ${title}`,
+    data: movies,
+  });
+});
+router.patch("/update/:ID", (req, res, next) => {
+  const id = req.params.ID;
+  const { title, rating, year } = req.query;
+  if (!title && year && rating) {
+    movies[id - 1].title = movies[id - 1].title;
+    movies[id - 1].rating = parseFloat(rating);
+    movies[id - 1].year = parseInt(year);
+    res.status(200).json({
+      message: `Edited movie ${id} rating to ${rating}\n Edited movie ${id} year to ${year}`,
+      data: movies,
+    });
+  } else if (!rating && year && title) {
+    movies[id - 1].rating = movies[id - 1].rating;
+    movies[id - 1].title = title;
+    movies[id - 1].year = parseInt(year);
+    res.status(200).json({
+      message: `Edited movie ${id} title to ${title}\n Edited movie ${id} year to ${year}`,
+      data: movies,
+    });
+  } else if (!year && rating && title) {
+    movies[id - 1].year = movies[id - 1].year;
+    movies[id - 1].title = title;
+    movies[id - 1].rating = parseFloat(rating);
+    res.status(200).json({
+      message: `Edited movie ${id} title to ${title}\n Edited movie ${id} rating to ${rating}`,
+      data: movies,
+    });
+  } else if (!title && !rating) {
+    movies[id - 1].year = parseInt(year);
+    movies[id - 1].title = movies[id - 1].title;
+    movies[id - 1].rating = movies[id - 1].rating;
+    res.status(200).json({
+      message: `Edited movie ${id} year to ${year}`,
+      data: movies,
+    });
+  } else if (!title && !year) {
+    movies[id - 1].year = movies[id - 1].year;
+    movies[id - 1].title = movies[id - 1].title;
+    movies[id - 1].rating = parseFloat(rating);
+    res.status(200).json({
+      message: `Edited movie ${id} rating to ${rating}`,
+      data: movies,
+    });
+  } else if (!year && !rating) {
+    movies[id - 1].year = movies[id - 1].year;
+    movies[id - 1].title = title;
+    movies[id - 1].rating = movies[id - 1].rating;
+    res.status(200).json({
+      message: `Edited movie ${id} title to ${title}`,
+      data: movies,
+    });
+  } else {
+    movies[id - 1].title = title;
+    movies[id - 1].rating = parseFloat(rating);
+    movies[id - 1].year = parseInt(year);
+    res.status(200).json({
+      message: `Edited movie ${id} title to ${title}\n Edited movie ${id} rating to ${rating}\n Edited movie ${id} year to ${year}`,
+      data: movies,
+    });
+  }
+});
 // end of patch routing --- start of delete routing
 router.delete("/delete", (req, res, next) => {
   res.status(200).json({
