@@ -123,15 +123,34 @@ router.post("/create/add", (req, res, next) => {
     }
   }
 });
-//end of create routing ---
+//end of create routing --- start of patch routing
 router.patch("/update", (req, res, next) => {
   res.status(200).json({
     message: "Edit movies",
   });
 });
+// end of patch routing --- start of delete routing
 router.delete("/delete", (req, res, next) => {
   res.status(200).json({
     message: " Delete movies",
   });
 });
+router.delete("/delete/:ID", (req, res, next) => {
+  const id = req.params.ID;
+  if (parseInt(id) < movies.length) {
+    let deletedMovie = movies[id - 1];
+    movies.splice(id - 1, 1);
+    res.status(200).json({
+      message: `Deleted ${deletedMovie.title}`,
+      data: movies,
+    });
+  } else {
+    res.status(404).json({
+      status: "404",
+      error: "true",
+      message: `The movie <ID> does not exist`,
+    });
+  }
+});
+//end of delete routing
 module.exports = router;
