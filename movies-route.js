@@ -1,28 +1,35 @@
 const express = require("express");
 const router = express.Router();
 const movies = require("./movies-object");
+const moviesModel = require("./movies-database");
+const app = require("./app");
 //start of read routing
-router.get("/read", (req, res, next) => {
-  res.status(200).json({
-    status: "200",
-    message: "Welcome to the movie section",
-    data: movies,
-  });
+router.get("/read", async (req, res, next) => {
+  try {
+    res.status(200).json({
+      status: "200",
+      message: "Welcome to the movie section",
+      data: await moviesModel.find({}),
+    });
+  } catch {
+    res.status(404).json({
+      message: "Database could not be fetched",
+    });
+  }
 });
-router.get("/read/id/:ID", (req, res, next) => {
+router.get("/read/id/:ID", async (req, res, next) => {
   const id = req.params.ID;
-  if (id < movies.length) {
+  if (id)
     res.status(200).json({
       status: "200",
       message: "This the requested movie",
-      data: movies[id - 1],
+      data: await moviesModel.findOne({ _id: id }),
     });
-  } else {
+  else {
     res.status(404).json({
       status: "404",
       error: "true",
       message: "The movie <ID> does not exist",
-      data: movies[id - 1],
     });
   }
 });
@@ -218,7 +225,7 @@ router.delete("/delete/:ID", (req, res, next) => {
     res.status(404).json({
       status: "404",
       error: "true",
-      message: `The movie <ID> does not exist`,
+      message: `The mov does not exist`,
     });
   }
 });
