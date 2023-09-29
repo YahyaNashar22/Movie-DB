@@ -33,54 +33,25 @@ router.get("/read/id/:ID", async (req, res, next) => {
     });
   }
 });
-router.get("/read/by-date", (req, res, next) => {
-  let sortedByDate = movies.sort(function (a, b) {
-    if (a.year < b.year) {
-      return -1;
-    }
-    if (a.year > b.year) {
-      return 1;
-    }
-    return 0;
-  });
+router.get("/read/by-date", async (req, res, next) => {
   res.status(200).json({
     status: "200",
     message: "Movies Sorted By Date",
-    data: sortedByDate,
+    data: await moviesModel.find().sort({ year: "asc" }),
   });
 });
-router.get("/read/by-rating", (req, res, next) => {
-  let sortedByRating = movies.sort(function (a, b) {
-    if (a.rating < b.rating) {
-      return 1;
-    }
-    if (a.rating > b.rating) {
-      return -1;
-    }
-    return 0;
-  });
+router.get("/read/by-rating", async (req, res, next) => {
   res.status(200).json({
     status: "200",
     message: "Movies Sorted By Rating",
-    data: sortedByRating,
+    data: await moviesModel.find().sort({ rating: "desc" }),
   });
 });
-router.get("/read/by-title", (req, res, next) => {
-  let sortedByTitle = movies.sort(function (a, b) {
-    let x = a.title.toUpperCase();
-    let y = b.title.toUpperCase();
-    if (x < y) {
-      return -1;
-    }
-    if (x > y) {
-      return 1;
-    }
-    return 0;
-  });
+router.get("/read/by-title", async (req, res, next) => {
   res.status(200).json({
     status: "200",
     message: "Movies Sorted By Title",
-    data: sortedByTitle,
+    data: await moviesModel.find().sort({ title: "asc" }),
   });
 });
 //end of read routing --- start of create routing
@@ -89,7 +60,7 @@ router.post("/create", (req, res, next) => {
     message: "Add movies",
   });
 });
-router.post("/create/add", (req, res, next) => {
+router.post("/create/add", async (req, res, next) => {
   const { title, year, rating } = req.query;
   if (!title || !year) {
     res.status(403).json({
@@ -111,10 +82,10 @@ router.post("/create/add", (req, res, next) => {
         year: parseInt(year),
         rating: 4,
       };
-      movies.push(addedMovie);
+      await moviesModel.insertOne(addedMovie);
       res.status(200).json({
         message: `added ${title}`,
-        data: movies,
+        data: moviesModel.find({}),
       });
     } else {
       addedMovie = {
@@ -122,10 +93,10 @@ router.post("/create/add", (req, res, next) => {
         year: parseInt(year),
         rating: parseFloat(rating),
       };
-      movies.push(addedMovie);
+      await moviesModel.insertOne(addedMovie);
       res.status(200).json({
         message: `added ${title}`,
-        data: movies,
+        data: moviesModel.find({}),
       });
     }
   }
